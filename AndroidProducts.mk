@@ -1,5 +1,6 @@
 #
-# Copyright (C) 2014 MaclawStudio (www.maclaw.pl)
+# Copyright (C) 2014 Marcin Chojnacki marcinch7@gmail.com
+# Copyright (C) 2014 NovaFusion https://github.com/NovaFusion
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
