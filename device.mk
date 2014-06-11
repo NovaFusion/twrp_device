@@ -31,4 +31,4 @@ PRODUCT_COPY_FILES += \
 
 # recovery
 PRODUCT_COPY_FILES += \
-    device/samsung/golden/recovery/twrp.fstab:recovery/root/etc/twrp.fstab
+    device/samsung/golden/recovery/recovery.fstab:recovery/root/etc/recovery.fstab
