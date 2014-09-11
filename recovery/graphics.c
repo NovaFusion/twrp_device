@@ -803,10 +803,10 @@ int gr_init_orig(void)
     return 0;
 }
 
-int gr_init(void) { 	 	
-    gr_init_orig(); 	 	
-    return gr_init_orig(); 	 	
-} 
+int gr_init(void) {
+    gr_init_orig();
+    return gr_init_orig();
+}
 
 void gr_exit(void)
 {
