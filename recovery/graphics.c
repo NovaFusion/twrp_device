@@ -70,7 +70,7 @@ static GRFont *gr_font = 0;
 static GGLContext *gr_context = 0;
 static GGLSurface gr_font_texture;
 static GGLSurface gr_framebuffer[NUM_BUFFERS];
-static GGLSurface gr_mem_surface;
+GGLSurface gr_mem_surface;
 static unsigned gr_active_fb = 0;
 static unsigned double_buffering = 0;
 static int gr_is_curr_clr_opaque = 0;
@@ -78,7 +78,7 @@ static int gr_is_curr_clr_opaque = 0;
 static int gr_fb_fd = -1;
 static int gr_vt_fd = -1;
 
-static struct fb_var_screeninfo vi;
+struct fb_var_screeninfo vi;
 static struct fb_fix_screeninfo fi;
 
 static bool has_overlay = false;
@@ -95,14 +95,14 @@ int overlay_display_frame(int fd, GGLubyte* data, size_t size);
 #ifdef PRINT_SCREENINFO
 static void print_fb_var_screeninfo()
 {
-    printf("vi.xres: %d\n", vi.xres);
-    printf("vi.yres: %d\n", vi.yres);
-    printf("vi.xres_virtual: %d\n", vi.xres_virtual);
-    printf("vi.yres_virtual: %d\n", vi.yres_virtual);
-    printf("vi.xoffset: %d\n", vi.xoffset);
-    printf("vi.yoffset: %d\n", vi.yoffset);
-    printf("vi.bits_per_pixel: %d\n", vi.bits_per_pixel);
-    printf("vi.grayscale: %d\n", vi.grayscale);
+	printf("vi.xres: %d\n", vi.xres);
+	printf("vi.yres: %d\n", vi.yres);
+	printf("vi.xres_virtual: %d\n", vi.xres_virtual);
+	printf("vi.yres_virtual: %d\n", vi.yres_virtual);
+	printf("vi.xoffset: %d\n", vi.xoffset);
+	printf("vi.yoffset: %d\n", vi.yoffset);
+	printf("vi.bits_per_pixel: %d\n", vi.bits_per_pixel);
+	printf("vi.grayscale: %d\n", vi.grayscale);
 }
 #endif
 
@@ -206,20 +206,20 @@ static int get_framebuffer(GGLSurface *fb)
         vi.transp.length  = 8;
     } else if (PIXEL_FORMAT == GGL_PIXEL_FORMAT_RGB_565) {
 #ifdef RECOVERY_RGB_565
-        fprintf(stderr, "Pixel format: RGB_565\n");
-        vi.blue.offset    = 0;
-        vi.green.offset   = 5;
-        vi.red.offset     = 11;
+		fprintf(stderr, "Pixel format: RGB_565\n");
+		vi.blue.offset    = 0;
+		vi.green.offset   = 5;
+		vi.red.offset     = 11;
 #else
         fprintf(stderr, "Pixel format: BGR_565\n");
-        vi.blue.offset    = 11;
-        vi.green.offset   = 5;
-        vi.red.offset     = 0;
+		vi.blue.offset    = 11;
+		vi.green.offset   = 5;
+		vi.red.offset     = 0;
 #endif
-        if (PIXEL_SIZE != 2)    fprintf(stderr, "E: Pixel Size mismatch!\n");
-        vi.blue.length    = 5;
-        vi.green.length   = 6;
-        vi.red.length     = 5;
+		if (PIXEL_SIZE != 2)    fprintf(stderr, "E: Pixel Size mismatch!\n");
+		vi.blue.length    = 5;
+		vi.green.length   = 6;
+		vi.red.length     = 5;
         vi.blue.msb_right = 0;
         vi.green.msb_right = 0;
         vi.red.msb_right = 0;
@@ -312,7 +312,7 @@ static int get_framebuffer(GGLSurface *fb)
     }
 
 #ifdef PRINT_SCREENINFO
-    print_fb_var_screeninfo();
+	print_fb_var_screeninfo();
 #endif
 
     return fd;
@@ -417,29 +417,29 @@ int gr_maxExW(const char *s, void* font, int max_width)
         off -= 32;
         if (off < 96) {
             max_width -= (fnt->offset[off+1] - fnt->offset[off]);
-            if (max_width > 0) {
-                total++;
-            } else {
-                return total;
-            }
-        }
+			if (max_width > 0) {
+				total++;
+			} else {
+				return total;
+			}
+		}
     }
     return total;
 }
 
 unsigned character_width(const char *s, void* pFont)
 {
-    GRFont *font = (GRFont*) pFont;
-    unsigned off;
+	GRFont *font = (GRFont*) pFont;
+	unsigned off;
 
-    /* Handle default font */
+	/* Handle default font */
     if (!font)  font = gr_font;
 
-    off = *s - 32;
-    if (off == 0)
-        return 0;
+	off = *s - 32;
+	if (off == 0)
+		return 0;
 
-    return font->offset[off+1] - font->offset[off];
+	return font->offset[off+1] - font->offset[off];
 }
 
 int gr_textEx(int x, int y, const char *s, void* pFont)
@@ -463,9 +463,9 @@ int gr_textEx(int x, int y, const char *s, void* pFont)
         cwidth = 0;
         if (off < 96) {
             cwidth = font->offset[off+1] - font->offset[off];
-            gl->texCoord2i(gl, (font->offset[off]) - x, 0 - y);
-            gl->recti(gl, x, y, x + cwidth, y + font->cheight);
-            x += cwidth;
+			gl->texCoord2i(gl, (font->offset[off]) - x, 0 - y);
+			gl->recti(gl, x, y, x + cwidth, y + font->cheight);
+			x += cwidth;
         }
     }
 
@@ -493,16 +493,16 @@ int gr_textExW(int x, int y, const char *s, void* pFont, int max_width)
         cwidth = 0;
         if (off < 96) {
             cwidth = font->offset[off+1] - font->offset[off];
-            if ((x + (int)cwidth) < max_width) {
-                gl->texCoord2i(gl, (font->offset[off]) - x, 0 - y);
-                gl->recti(gl, x, y, x + cwidth, y + font->cheight);
-                x += cwidth;
-            } else {
-                gl->texCoord2i(gl, (font->offset[off]) - x, 0 - y);
-                gl->recti(gl, x, y, max_width, y + font->cheight);
-                x = max_width;
-                return x;
-            }
+			if ((x + (int)cwidth) < max_width) {
+				gl->texCoord2i(gl, (font->offset[off]) - x, 0 - y);
+				gl->recti(gl, x, y, x + cwidth, y + font->cheight);
+				x += cwidth;
+			} else {
+				gl->texCoord2i(gl, (font->offset[off]) - x, 0 - y);
+				gl->recti(gl, x, y, max_width, y + font->cheight);
+				x = max_width;
+				return x;
+			}
         }
     }
 
@@ -515,7 +515,7 @@ int gr_textExWH(int x, int y, const char *s, void* pFont, int max_width, int max
     GRFont *font = (GRFont*) pFont;
     unsigned off;
     unsigned cwidth;
-    int rect_x, rect_y;
+	int rect_x, rect_y;
 
     /* Handle default font */
     if (!font)  font = gr_font;
@@ -531,20 +531,20 @@ int gr_textExWH(int x, int y, const char *s, void* pFont, int max_width, int max
         cwidth = 0;
         if (off < 96) {
             cwidth = font->offset[off+1] - font->offset[off];
-            if ((x + (int)cwidth) < max_width)
-                rect_x = x + cwidth;
-            else
-                rect_x = max_width;
-            if (y + font->cheight < (unsigned int)(max_height))
-                rect_y = y + font->cheight;
-            else
-                rect_y = max_height;
+			if ((x + (int)cwidth) < max_width)
+				rect_x = x + cwidth;
+			else
+				rect_x = max_width;
+			if (y + font->cheight < (unsigned int)(max_height))
+				rect_y = y + font->cheight;
+			else
+				rect_y = max_height;
 
-            gl->texCoord2i(gl, (font->offset[off]) - x, 0 - y);
-            gl->recti(gl, x, y, rect_x, rect_y);
-            x += cwidth;
-            if (x > max_width)
-                return x;
+			gl->texCoord2i(gl, (font->offset[off]) - x, 0 - y);
+			gl->recti(gl, x, y, rect_x, rect_y);
+			x += cwidth;
+			if (x > max_width)
+				return x;
         }
     }
 
@@ -791,8 +791,11 @@ int gr_init_orig(void)
     gl->enable(gl, GGL_BLEND);
     gl->blendFunc(gl, GGL_SRC_ALPHA, GGL_ONE_MINUS_SRC_ALPHA);
 
-//    gr_fb_blank(true);
-//    gr_fb_blank(false);
+#ifdef TW_SCREEN_BLANK_ON_BOOT
+    printf("TW_SCREEN_BLANK_ON_BOOT := true\n");
+    gr_fb_blank(true);
+    gr_fb_blank(false);
+#endif
 
     if (!alloc_ion_mem(fi.line_length * vi.yres))
         allocate_overlay(gr_fb_fd, gr_framebuffer);
@@ -800,10 +803,10 @@ int gr_init_orig(void)
     return 0;
 }
 
-int gr_init(void) {
-    gr_init_orig();
-    return gr_init_orig();
-}
+int gr_init(void) { 	 	
+    gr_init_orig(); 	 	
+    return gr_init_orig(); 	 	
+} 
 
 void gr_exit(void)
 {
@@ -838,15 +841,15 @@ gr_pixel *gr_fb_data(void)
 int gr_fb_blank(int blank)
 {
     int ret;
-    if (blank)
-        free_overlay(gr_fb_fd);
+    //if (blank)
+        //free_overlay(gr_fb_fd);
 
     ret = ioctl(gr_fb_fd, FBIOBLANK, blank ? FB_BLANK_POWERDOWN : FB_BLANK_UNBLANK);
     if (ret < 0)
         perror("ioctl(): blank");
 
-    if (!blank)
-        allocate_overlay(gr_fb_fd, gr_framebuffer);
+    //if (!blank)
+        //allocate_overlay(gr_fb_fd, gr_framebuffer);
     return ret;
 }
 
